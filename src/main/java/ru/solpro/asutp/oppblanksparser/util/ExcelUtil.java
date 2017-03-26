@@ -28,13 +28,22 @@ import java.util.Date;
  */
 public class ExcelUtil {
 
+    private static final int CELL_NAME_PROD = 0;
+    private static final int CELL_NAME_LINE = 1;
+    private static final int CELL_EVENT_DATA = 2;
+    private static final int CELL_STOP_TIME = 3;
+    private static final int CELL_START_TIME = 4;
+    private static final int CELL_DOWNTIME = 5;
+    private static final int CELL_IDLE_GROUP_NUMBER = 6;
+    private static final int CELL_TYPE_IDLE_GROUP = 7;
+    private static final int CELL_CAUSE_DOWNTIME = 8;
+
     private static SettingController setting = SettingController.getInstance();
 
     private ExcelUtil() {}
 
     /**
      * Парсит файл бланка ОПП и выбирает данные о простоях.
-     *
      * @param file файл для обработки
      * @return массив с данными о простоях
      * @throws IOException
@@ -65,7 +74,7 @@ public class ExcelUtil {
                 if ((cell.getCellType() == Cell.CELL_TYPE_STRING) && (!flag)) {
                     flag = true;
                     lineName = row.getCell(1).getStringCellValue();
-                    if (!setting.getLineNames().contains(lineName)) {
+                    if (!setting.containsNameLine(lineName)) {
                         break;
                     }
                 }
@@ -130,7 +139,6 @@ public class ExcelUtil {
 
     /**
      * Метод записывает переданные данные в файл Excel.
-     *
      * @param file          файл для записи.
      * @param dataArrayList данные для записи.
      */
@@ -148,16 +156,20 @@ public class ExcelUtil {
             rowsTotal++;
             row = sheet.createRow(rowsTotal);
 
+            // название производства
+            cell = row.createCell(CELL_NAME_PROD);
+            cell.setCellValue(setting.getNameProdByNameLine(blankData.getLineName()));
+
             // название линии
-            cell = row.createCell(0);
+            cell = row.createCell(CELL_NAME_LINE);
             cell.setCellValue(blankData.getLineName());
 
             // дата события
-            cell = row.createCell(1);
+            cell = row.createCell(CELL_EVENT_DATA);
             cell.setCellValue(blankData.getEventDate());
 
             // время остановки
-            cell = row.createCell(2);
+            cell = row.createCell(CELL_STOP_TIME);
             Date stopTime = blankData.getStopTime();
             if (stopTime != null) {
                 stopTime.setYear(stopTime.getYear() + 10);
@@ -165,7 +177,7 @@ public class ExcelUtil {
             }
 
             // время запуска
-            cell = row.createCell(3);
+            cell = row.createCell(CELL_START_TIME);
             Date launchTime = blankData.getLaunchTime();
             if (launchTime != null) {
                 launchTime.setYear(launchTime.getYear() + 10);
@@ -179,10 +191,10 @@ public class ExcelUtil {
             }
 
             // время простоя
-            cell = row.createCell(4);
+            cell = row.createCell(CELL_DOWNTIME);
             Date downtime = blankData.getDowntime();
             if ((stopTime != null) && (launchTime != null)) {
-                String formula = row.getCell(3).getAddress().toString() + "-" + row.getCell(2).getAddress().toString();
+                String formula = row.getCell(CELL_START_TIME).getAddress().toString() + "-" + row.getCell(CELL_STOP_TIME).getAddress().toString();
                 cell.setCellFormula(formula);
             } else if (downtime != null) {
                 HSSFCellStyle cellStyle = workbook.createCellStyle();
@@ -196,21 +208,21 @@ public class ExcelUtil {
             }
 
             // номер группы простоя
-            cell = row.createCell(5);
+            cell = row.createCell(CELL_IDLE_GROUP_NUMBER);
             String idleGroupNumber = blankData.getIdleGroupNumber();
             if (idleGroupNumber != null) {
                 cell.setCellValue(idleGroupNumber);
             }
 
             // описание группы простоя
-            cell = row.createCell(6);
+            cell = row.createCell(CELL_TYPE_IDLE_GROUP);
             String typeIdleGroup = blankData.getTypeIdleGroup();
             if (typeIdleGroup != null) {
                 cell.setCellValue(typeIdleGroup);
             }
 
             // причина простоя
-            cell = row.createCell(7);
+            cell = row.createCell(CELL_CAUSE_DOWNTIME);
             String causeDowntime = blankData.getCauseDowntime();
             if (causeDowntime != null) {
                 cell.setCellValue(causeDowntime);
@@ -218,8 +230,11 @@ public class ExcelUtil {
         }
 
         try {
-            workbook.write(new FileOutputStream(file));
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            workbook.write(fileOutputStream);
             workbook.close();
+            fileOutputStream.flush();
+            fileOutputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

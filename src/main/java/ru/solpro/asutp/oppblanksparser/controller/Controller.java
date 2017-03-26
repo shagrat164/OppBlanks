@@ -11,14 +11,17 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import ru.solpro.asutp.oppblanksparser.model.BlankData;
+import ru.solpro.asutp.oppblanksparser.model.Line;
 import ru.solpro.asutp.oppblanksparser.util.ExcelUtil;
 import ru.solpro.asutp.oppblanksparser.util.Util;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Protsvetov Danila
@@ -48,7 +51,8 @@ public class Controller {
 
     @FXML
     private void startAction(ActionEvent actionEvent) {
-        File[] files = showDialogSelectedFile();
+        File[] files = getListFolderFromSettings();
+
         if (files.length > 0) {
             for (File file : files) {
                 String[] listFilesDir = file.list(new FilenameFilter() {
@@ -65,11 +69,12 @@ public class Controller {
                             ArrayList<BlankData> blankDataFromFile = ExcelUtil.getBlankDataFromFile(pathToFile);
                             blankDataList.addAll(blankDataFromFile);
                         } catch (IOException e) {
-                            Alert alert = new Alert(AlertType.ERROR);
-                            alert.setTitle("Error");
-                            alert.setHeaderText("Ошибка обработки файла");
-                            alert.setContentText("Error:\n" + e.toString());
-                            alert.showAndWait();
+//                            Alert alert = new Alert(AlertType.ERROR);
+//                            alert.setTitle("Error");
+//                            alert.setHeaderText("Ошибка обработки файла");
+//                            alert.setContentText("Error:\n" + e.toString());
+//                            alert.showAndWait();
+                            e.printStackTrace();
                         }
                     }
                 }
@@ -80,11 +85,31 @@ public class Controller {
             if (blankDataList.size() > 0) {
                 ExcelUtil.setBlankDataToFile("output.xls", blankDataList);
                 blankDataList.clear();
+
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    // открываю только что созданный файл
+                    desktop.open(new File("output.xls"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private File[] showDialogSelectedFile() {
+    private File[] getListFolderFromSettings() {
+        File[] result = new File[SettingController.getInstance().getPath().size()];
+        int i = 0;
+
+        for (String strFile : SettingController.getInstance().getPath()) {
+            File file = new File(strFile);
+            result[i++] = file;
+        }
+
+        return result;
+    }
+
+    private File[] getListFolderFromDialog() {
         JFileChooser dialog = new JFileChooser();
 
         dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);   // режим выбора только директории

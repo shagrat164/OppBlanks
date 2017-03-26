@@ -2,38 +2,42 @@
 <settings>
     <idleGroups>3.4</idleGroups>
     <idleGroups>3.5</idleGroups>
-    <lineNames>ГБ Шредер</lineNames>
-    <lineNames>ГБ Шредер 2</lineNames>
-    <lineNames>ГБ Шредер 3</lineNames>
-    <lineNames>ГБ Шредер 4</lineNames>
-    <lineNames>Bag in Box</lineNames>
-    <lineNames>Кемтек 1</lineNames>
-    <lineNames>Кемтек 2</lineNames>
-    <lineNames>Слойка НЖК</lineNames>
-    <lineNames>Джонсон</lineNames>
-    <lineNames>Унипак</lineNames>
-    <lineNames>Д400</lineNames>
-    <lineNames>Д500</lineNames>
-    <lineNames>Юнисток</lineNames>
-    <lineNames>Отбелка №1 (Д400)</lineNames>
-    <lineNames>Отбелка №2 (Д400)</lineNames>
-    <lineNames>Отбелка №3 (Д400)</lineNames>
-    <lineNames>Отбелка А (Д500)</lineNames>
-    <lineNames>Отбелка В (Д500)</lineNames>
-    <lineNames>Отбелка С (Д500)</lineNames>
-    <lineNames>Отбелка D (Д500)</lineNames>
-    <lineNames>СКО</lineNames>
-    <lineNames>Вольпак-220</lineNames>
-    <lineNames>Твист-офф</lineNames>
-    <lineNames>Боссар-1400</lineNames>
-    <lineNames>Унипак</lineNames>
-    <lineNames>Терминал налива</lineNames>
-    <lineNames>Гидрогенизация 1-я линия</lineNames>
-    <lineNames>Гидрогенизация 2-я линия</lineNames>
-    <lineNames>Отбелка №1</lineNames>
-    <lineNames>Отбелка №2</lineNames>
-    <lineNames>Отбелка №3</lineNames>
-    <lineNames>Альфа-Лаваль №1</lineNames>
-    <lineNames>Альфа-Лаваль №2</lineNames>
-    <lineNames>Альфа-Лаваль №3</lineNames>
+    <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №1"/>
+    <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №2"/>
+    <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №3"/>
+    <lineNames nameProduction="НГГ" nameLine="Гидрогенизация 1-я линия"/>
+    <lineNames nameProduction="НГГ" nameLine="Гидрогенизация 2-я линия"/>
+    <lineNames nameProduction="НГГ" nameLine="Отбелка №1"/>
+    <lineNames nameProduction="НГГ" nameLine="Отбелка №2"/>
+    <lineNames nameProduction="НГГ" nameLine="Отбелка №3"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Д400"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Д500"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Юнисток"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Отбелка №1 (Д400)"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Отбелка №2 (Д400)"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Отбелка №3 (Д400)"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Отбелка А (Д500)"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Отбелка В (Д500)"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Отбелка С (Д500)"/>
+    <lineNames nameProduction="ДЕЗ" nameLine="Отбелка D (Д500)"/>
+    <lineNames nameProduction="МНЗ" nameLine="СКО"/>
+    <lineNames nameProduction="МНЗ" nameLine="Вольпак-220"/>
+    <lineNames nameProduction="МНЗ" nameLine="Твист-офф"/>
+    <lineNames nameProduction="МНЗ" nameLine="Боссар-1400"/>
+    <lineNames nameProduction="МНЗ" nameLine="Унипак"/>
+    <lineNames nameProduction="МНЗ" nameLine="Терминал налива"/>
+    <lineNames nameProduction="СМП" nameLine="Кемтек 1"/>
+    <lineNames nameProduction="СМП" nameLine="Кемтек 2"/>
+    <lineNames nameProduction="СМП" nameLine="Слойка НЖК"/>
+    <lineNames nameProduction="СМП" nameLine="Джонсон"/>
+    <lineNames nameProduction="СМП" nameLine="Унипак"/>
+    <lineNames nameProduction="НМП" nameLine="ГБ Шредер"/>
+    <lineNames nameProduction="НМП" nameLine="ГБ Шредер 2"/>
+    <lineNames nameProduction="НМП" nameLine="ГБ Шредер 3"/>
+    <lineNames nameProduction="НМП" nameLine="ГБ Шредер 4"/>
+    <lineNames nameProduction="НМП" nameLine="Bag in Box"/>
+    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2017\март 2017</path>
+    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2017\февраль 2017</path>
+    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2017\Январь 2017</path>
+    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2016\Июль 2016</path>
 </settings>

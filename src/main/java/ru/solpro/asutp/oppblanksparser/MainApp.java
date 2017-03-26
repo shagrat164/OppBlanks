@@ -24,14 +24,6 @@ public class MainApp extends Application {
         launch(args);
     }
 
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
-    public AnchorPane getRootLayout() {
-        return rootLayout;
-    }
-
     @Override
     public void init() throws Exception {
         new SettingsXmlParser().loadFromFile("data/setting.xml");
@@ -49,5 +41,7 @@ public class MainApp extends Application {
     }
 
     @Override
-    public void stop() throws Exception {}
+    public void stop() throws Exception {
+        new SettingsXmlParser().saveToFile("data/setting.xml");
+    }
 }
