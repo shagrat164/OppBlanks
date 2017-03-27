@@ -2,6 +2,7 @@
 <settings>
     <idleGroups>3.4</idleGroups>
     <idleGroups>3.5</idleGroups>
+    <idleGroups>5</idleGroups>
     <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №1"/>
     <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №2"/>
     <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №3"/>
@@ -36,8 +37,8 @@
     <lineNames nameProduction="НМП" nameLine="ГБ Шредер 3"/>
     <lineNames nameProduction="НМП" nameLine="ГБ Шредер 4"/>
     <lineNames nameProduction="НМП" nameLine="Bag in Box"/>
-    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2017\март 2017</path>
-    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2017\февраль 2017</path>
-    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2017\Январь 2017</path>
-    <path>O:\Производство\_Общая\Саратов\Бланки_ОПП\2016\Июль 2016</path>
+    <lineNames nameProduction="МЫЛ" nameLine="ВСУ 1"/>
+    <lineNames nameProduction="МЫЛ" nameLine="ВСУ 2"/>
+    <lineNames nameProduction="МЫЛ" nameLine="НЖК"/>
+    <path>H:\Производство\_Общая\Саратов\Бланки_ОПП\бланки мыло\2017\Март</path>
 </settings>

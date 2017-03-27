@@ -93,7 +93,7 @@ public class Util {
      * @return true - соответствует, false - не соответствует.
      */
     public static boolean checkCorrectFileName(String fileName) {
-        Pattern pattern = Pattern.compile("^[А-Яа-я]+ [0-9]{2}[.]{1,}[0-9]{2}[.]{1,}[0-9]{2,4}\\.[xlsxXLSX]{4}$");
+        Pattern pattern = Pattern.compile("^[А-Яа-я\\s]*[0-9]{2}[.]+[0-9]{2}[.]+[0-9]{2,4}\\.[xlsxXLSX]{4}$");
         Matcher matcher = pattern.matcher(fileName);
 
         return matcher.find();
