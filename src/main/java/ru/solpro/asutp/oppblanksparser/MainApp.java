@@ -42,6 +42,6 @@ public class MainApp extends Application {
 
     @Override
     public void stop() throws Exception {
-        new SettingsXmlParser().saveToFile("data/setting.xml");
+//        new SettingsXmlParser().saveToFile("data/setting.xml");
     }
 }
