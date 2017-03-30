@@ -16,7 +16,6 @@ import ru.solpro.asutp.oppblanksparser.util.Util;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -29,9 +28,9 @@ public class Controller {
     private static ArrayList<BlankData> blankDataList = new ArrayList<>(); // считанные данные
 
     @FXML
-    private Label labelDataProcessingTime;
+    private Label labelDataProcessing;
     @FXML
-    private Button btnStartAnalise;
+    private Button buttonStartAnalise;
     @FXML
     private Label labelListIdleGroups;
 
@@ -54,54 +53,48 @@ public class Controller {
 
     @FXML
     private void startAction(ActionEvent actionEvent) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                File[] files = getListFolderFromSettings();
-
-                if (files.length > 0) {
-                    for (File file : files) {
-                        String[] listFilesDir = file.list(new FilenameFilter() {
-                            @Override
-                            public boolean accept(File dir, String name) {
-                                return Util.checkCorrectFileName(name);
-                            }
-                        });
-
-                        if (listFilesDir != null) {
-                            int countFile = 0;
-                            for (String fileName : listFilesDir) {
-                                String pathToFile = file.getAbsolutePath() + "\\" + fileName;
-                                try {
-                                    ArrayList<BlankData> blankDataFromFile = ExcelUtil.getBlankDataFromFile(pathToFile);
-                                    blankDataList.addAll(blankDataFromFile);
-                                    countFile++;
-                                    String strProgress = "Обработано " + countFile + "/" + listFilesDir.length;
-                                    Platform.runLater(() -> {
-                                        labelDataProcessingTime.setText(strProgress);
-                                    });
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+        Thread thread = new Thread(() -> {
+            File[] folders = getListFoldersFromSettings();
+            ArrayList<String> listPatchToFile = new ArrayList<>(folders.length * 30);
+            if (folders.length > 0) {
+                for (File folder : folders) {
+                    String[] listFilesDir = folder.list((dir, name) -> Util.checkCorrectFileName(name));
+                    if ((listFilesDir != null) && (listFilesDir.length > 0)) {
+                        for (String fileName : listFilesDir) {
+                            listPatchToFile.add(folder.getAbsolutePath() + "\\" + fileName);
                         }
                     }
+                }
+            }
 
-                    Platform.runLater(() -> {
-                        labelDataProcessingTime.setText("Записей найдёно: " + blankDataList.size());
-                    });
+            if (!listPatchToFile.isEmpty()) {
+                int countFile = 0;
+                for (String pathToFile : listPatchToFile) {
+                    try {
+                        ArrayList<BlankData> blankDataFromFile = ExcelUtil.getBlankDataFromFile(pathToFile);
+                        blankDataList.addAll(blankDataFromFile);
 
-                    if (blankDataList.size() > 0) {
-                        ExcelUtil.setBlankDataToFile("output.xls", blankDataList);
-                        blankDataList.clear();
+                        countFile++;
+                        String strProgress = "Обработано " + countFile + "/" + listPatchToFile.size();
 
-                        Desktop desktop = Desktop.getDesktop();
-                        try {
-                            // открываю только что созданный файл
-                            desktop.open(new File("output.xls"));
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        Platform.runLater(() -> labelDataProcessing.setText(strProgress));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Platform.runLater(() -> labelDataProcessing.setText("Записей найдёно: " + blankDataList.size()));
+
+                if (blankDataList.size() > 0) {
+                    ExcelUtil.setBlankDataToFile("output.xls", blankDataList);
+                    blankDataList.clear();
+
+                    Desktop desktop = Desktop.getDesktop();
+                    try {
+                        // открываю только что созданный файл
+                        desktop.open(new File("output.xls"));
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -110,7 +103,11 @@ public class Controller {
         thread.start();
     }
 
-    private File[] getListFolderFromSettings() {
+    /**
+     * Получить список папок из настроек.
+     * @return Список папок.
+     */
+    private File[] getListFoldersFromSettings() {
         File[] result = new File[SettingController.getInstance().getPath().size()];
         int i = 0;
 

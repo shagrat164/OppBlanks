@@ -6,9 +6,9 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.solpro.asutp.oppblanksparser.controller.Controller">
    <children>
-      <Button fx:id="btnStartAnalise" layoutX="289.0" layoutY="261.0" mnemonicParsing="false" onAction="#startAction" text="Старт" />
+      <Button fx:id="buttonStartAnalise" layoutX="289.0" layoutY="261.0" mnemonicParsing="false" onAction="#startAction" text="Старт" />
       <Label layoutX="25.0" layoutY="14.0" prefHeight="34.0" prefWidth="297.0" text="Программа парсит файлы бланков ОПП и &#10;записывает найденный результат в файл output.xls" textAlignment="CENTER" />
       <Label fx:id="labelListIdleGroups" layoutX="14.0" layoutY="70.0" />
-      <Label fx:id="labelDataProcessingTime" layoutX="14.0" layoutY="265.0" />
+      <Label fx:id="labelDataProcessing" layoutX="14.0" layoutY="265.0" />
    </children>
 </AnchorPane>

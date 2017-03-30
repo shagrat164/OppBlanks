@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings>
+    <idleGroups>3</idleGroups>
+    <idleGroups>3.1</idleGroups>
+    <idleGroups>3.2</idleGroups>
+    <idleGroups>3.3</idleGroups>
     <idleGroups>3.4</idleGroups>
     <idleGroups>3.5</idleGroups>
-    <idleGroups>5</idleGroups>
+    <idleGroups>3.6</idleGroups>
     <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №1"/>
     <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №2"/>
     <lineNames nameProduction="РАФ" nameLine="Альфа-Лаваль №3"/>
@@ -40,5 +44,5 @@
     <lineNames nameProduction="МЫЛ" nameLine="ВСУ 1"/>
     <lineNames nameProduction="МЫЛ" nameLine="ВСУ 2"/>
     <lineNames nameProduction="МЫЛ" nameLine="НЖК"/>
-    <path>H:\Производство\_Общая\Саратов\Бланки_ОПП\бланки мыло\2017\Февраль</path>
+    <path>\\192.168.1.205\tmp\Данила\dev\Февраль 2017</path>
 </settings>

@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.solpro.asutp</groupId>
-    <artifactId>oop-blanks</artifactId>
-    <version>1.0</version>
+    <artifactId>opp-blanks</artifactId>
+    <version>1.2</version>
 
     <build>
-        <finalName>oopBlanks</finalName>
+        <finalName>oppBlanks</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -252,7 +252,37 @@ public class ExcelUtil {
             workbook = new HSSFWorkbook(new POIFSFileSystem(new FileInputStream(xlsFile)));
         } catch (FileNotFoundException e) {
             workbook = new HSSFWorkbook();
-            workbook.createSheet();
+            HSSFSheet sheet = workbook.createSheet();
+            HSSFRow row = sheet.createRow(0);
+            HSSFCell cell = null;
+
+            cell = row.createCell(0);
+            cell.setCellValue("Производство");
+
+            cell = row.createCell(1);
+            cell.setCellValue("Линия");
+
+            cell = row.createCell(2);
+            cell.setCellValue("Дата");
+
+            cell = row.createCell(3);
+            cell.setCellValue("Время остановки");
+
+            cell = row.createCell(4);
+            cell.setCellValue("Время запуска");
+
+            cell = row.createCell(5);
+            cell.setCellValue("Время простоя");
+
+            cell = row.createCell(6);
+            cell.setCellValue("Группа простоя");
+
+            cell = row.createCell(7);
+            cell.setCellValue("Описание группы");
+
+            cell = row.createCell(8);
+            cell.setCellValue("Комментарий");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
