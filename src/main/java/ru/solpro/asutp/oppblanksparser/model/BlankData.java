@@ -14,6 +14,9 @@ import java.util.Date;
  */
 public class BlankData {
 
+    // Название производства
+    private String productionName;
+
     // Название линии.
     private String lineName;
 
@@ -39,6 +42,14 @@ public class BlankData {
     private String causeDowntime;
 
     public BlankData() {}
+
+    public String getProductionName() {
+        return productionName;
+    }
+
+    public void setProductionName(String productionName) {
+        this.productionName = productionName;
+    }
 
     public String getLineName() {
         return lineName;

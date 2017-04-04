@@ -4,6 +4,7 @@
 
 package ru.solpro.asutp.oppblanksparser.util;
 
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
@@ -28,6 +29,7 @@ import java.util.Date;
  */
 public class ExcelUtil {
 
+    private static final Logger LOG = Logger.getLogger(ExcelUtil.class);
     private static final int CELL_NAME_PROD = 0;
     private static final int CELL_NAME_LINE = 1;
     private static final int CELL_EVENT_DATA = 2;
@@ -40,7 +42,18 @@ public class ExcelUtil {
 
     private static SettingController setting = SettingController.getInstance();
 
+    private static int counterReadErrors = 0;
+    private static int counterWriteErrors = 0;
+
     private ExcelUtil() {}
+
+    public static int getCounterReadErrors() {
+        return counterReadErrors;
+    }
+
+    public static void setCounterReadErrors(int counterReadErrors) {
+        ExcelUtil.counterReadErrors = counterReadErrors;
+    }
 
     /**
      * Парсит файл бланка ОПП и выбирает данные о простоях.
@@ -48,117 +61,129 @@ public class ExcelUtil {
      * @return массив с данными о простоях
      * @throws IOException
      */
-    public static ArrayList<BlankData> getBlankDataFromFile(String file) throws IOException {
+    public static ArrayList<BlankData> getBlankDataFromFile(String file) {
         ArrayList<BlankData> res = new ArrayList<>();
         File xlsxFile = new File(file);
-        XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(xlsxFile));
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(xlsxFile));
 
-        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-            XSSFSheet sheet = workbook.getSheetAt(i);
+            for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+                XSSFSheet sheet = workbook.getSheetAt(i);
 
-            String lineName = null;
-            boolean flag = false;
+                String lineName = null;
+                boolean flag = false;
 
-            for (int j = 0; j < 50; j++) {
-                XSSFRow row = sheet.getRow(j);
-                if (row == null) {
-                    break;
-                }
-
-                XSSFCell cell = row.getCell(1);
-
-                if (cell == null) {
-                    break;
-                }
-
-                if ((cell.getCellType() == Cell.CELL_TYPE_STRING) && (!flag)) {
-                    flag = true;
-                    lineName = row.getCell(1).getStringCellValue();
-                    if (!setting.containsNameLine(lineName)) {
+                for (int j = 0; j < 50; j++) {
+                    XSSFRow row = sheet.getRow(j);
+                    if (row == null) {
                         break;
                     }
-                }
 
-                cell = row.getCell(13);
+                    XSSFCell cell = row.getCell(1);
 
-                if ((cell != null) && (cell.getCellType() == Cell.CELL_TYPE_STRING)) {
-                    if (setting.getIdleGroups().contains(cell.getStringCellValue())) {
-                        BlankData blankData = new BlankData();
+                    if (cell == null) {
+                        break;
+                    }
 
-                        blankData.setEventDate(Util.getDateFromFilename(xlsxFile));
+                    if ((cell.getCellType() == Cell.CELL_TYPE_STRING) && (!flag)) {
+                        flag = true;
+                        lineName = row.getCell(1).getStringCellValue();
+                        if (!setting.containsNameLine(lineName)) {
+                            break;
+                        }
+                    }
 
-                        blankData.setLineName(lineName);
+                    cell = row.getCell(13);
 
-                        cell = row.getCell(10);
-                        if (cell != null) {
-                            Date dateCellValue = cell.getDateCellValue();
-                            if (dateCellValue != null) {
-                                blankData.setStopTime(dateCellValue);
+                    if ((cell != null) && (cell.getCellType() == Cell.CELL_TYPE_STRING)) {
+                        if (setting.getIdleGroups().contains(cell.getStringCellValue())) {
+
+                            BlankData blankData = new BlankData();
+
+                            blankData.setEventDate(Util.getDateFromFilename(xlsxFile));
+                            blankData.setLineName(lineName);
+                            blankData.setProductionName(setting.getNameProductionByPathname(file));
+
+                            cell = row.getCell(10);
+                            if (cell != null) {
+                                Date dateCellValue = cell.getDateCellValue();
+                                if (dateCellValue != null) {
+                                    blankData.setStopTime(dateCellValue);
+                                }
                             }
-                        }
 
-                        cell = row.getCell(11);
-                        if (cell != null) {
-                            Date dateCellValue = cell.getDateCellValue();
-                            if (dateCellValue != null) {
-                                blankData.setLaunchTime(dateCellValue);
+                            cell = row.getCell(11);
+                            if (cell != null) {
+                                Date dateCellValue = cell.getDateCellValue();
+                                if (dateCellValue != null) {
+                                    blankData.setLaunchTime(dateCellValue);
+                                }
                             }
-                        }
 
-                        cell = row.getCell(12);
-                        if (cell != null && (cell.getCellType() != Cell.CELL_TYPE_ERROR)) {
-                            Date dateCellValue = cell.getDateCellValue();
-                            if (dateCellValue != null) {
-                                blankData.setDowntime(dateCellValue);
+                            cell = row.getCell(12);
+                            if (cell != null && (cell.getCellType() != Cell.CELL_TYPE_ERROR)) {
+                                Date dateCellValue = cell.getDateCellValue();
+                                if (dateCellValue != null) {
+                                    blankData.setDowntime(dateCellValue);
+                                }
                             }
-                        }
 
-                        cell = row.getCell(13);
-                        if (cell != null) {
-                            blankData.setIdleGroupNumber(cell.getStringCellValue());
-                        }
+                            cell = row.getCell(13);
+                            if (cell != null) {
+                                blankData.setIdleGroupNumber(cell.getStringCellValue());
+                            }
 
-                        cell = row.getCell(14);
-                        if (cell != null) {
-                            blankData.setTypeIdleGroup(cell.getStringCellValue());
-                        }
+                            cell = row.getCell(14);
+                            if (cell != null) {
+                                blankData.setTypeIdleGroup(cell.getStringCellValue());
+                            }
 
-                        cell = row.getCell(15);
-                        if (cell != null) {
-                            blankData.setCauseDowntime(cell.getStringCellValue());
-                        }
+                            cell = row.getCell(15);
+                            if ((cell != null) && (cell.getCellType() == Cell.CELL_TYPE_STRING)) {
+                                blankData.setCauseDowntime(cell.getStringCellValue());
+                            }
 
-                        res.add(blankData);
+                            res.add(blankData);
+                            LOG.info("Прочитано: File=" + xlsxFile.getPath() + "; Data=" + blankData.toString());
+                        }
                     }
                 }
             }
+            workbook.close();
+        } catch (FileNotFoundException e) {
+            LOG.error(e.getMessage());
+            counterReadErrors++;
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+            counterReadErrors++;
+        } catch (RuntimeException e) {
+            LOG.error(e.getMessage());
+            counterReadErrors++;
         }
-        workbook.close();
         return res;
     }
 
     /**
      * Метод записывает переданные данные в файл Excel.
-     * @param file          файл для записи.
+     * @param pathname      файл для записи.
      * @param dataArrayList данные для записи.
      */
-    public static void setBlankDataToFile(String file, ArrayList<BlankData> dataArrayList) {
-        HSSFWorkbook workbook = getWorkbookFromFile(file);
+    public static void setBlankDataToFile(String pathname, ArrayList<BlankData> dataArrayList) {
+        HSSFWorkbook workbook = getWorkbookFromFile(pathname);
         HSSFSheet sheet = workbook.getSheetAt(0);
         HSSFRow row = null;
         HSSFCell cell = null;
 
         // актуальное число строк,
         // необходимо для записи данных в конец файла
-        int rowsTotal = sheet.getPhysicalNumberOfRows();
+        int rowsTotal = sheet.getPhysicalNumberOfRows() + 1;
 
         for (BlankData blankData : dataArrayList) {
-            rowsTotal++;
-            row = sheet.createRow(rowsTotal);
+            row = sheet.createRow(rowsTotal++);
 
             // название производства
             cell = row.createCell(CELL_NAME_PROD);
-            cell.setCellValue(setting.getNameProdByNameLine(blankData.getLineName()));
+            cell.setCellValue(blankData.getProductionName());
 
             // название линии
             cell = row.createCell(CELL_NAME_LINE);
@@ -227,16 +252,17 @@ public class ExcelUtil {
             if (causeDowntime != null) {
                 cell.setCellValue(causeDowntime);
             }
+            LOG.info("Записано: " + blankData.toString());
         }
 
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            FileOutputStream fileOutputStream = new FileOutputStream(pathname);
             workbook.write(fileOutputStream);
             workbook.close();
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
     }
 
@@ -284,7 +310,7 @@ public class ExcelUtil {
             cell.setCellValue("Комментарий");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage());
         }
         return workbook;
     }

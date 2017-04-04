@@ -4,12 +4,11 @@
 
 package ru.solpro.asutp.oppblanksparser.controller;
 
-import ru.solpro.asutp.oppblanksparser.model.Line;
+import ru.solpro.asutp.oppblanksparser.model.Path;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Protsvetov Danila
@@ -20,9 +19,9 @@ public class SettingController {
 
     private static SettingController ourInstance;
 
-    private ArrayList<String> path = new ArrayList<>();         // пути к папкам с бланками
-    private List<Line> lineNames = new ArrayList<>();           // наименование линий по производствам
-    private ArrayList<String> idleGroups = new ArrayList<>();   // список групп простоя
+    private ArrayList<Path> path = new ArrayList<>();         // пути к папкам с бланками
+    private ArrayList<String> lineNames = new ArrayList<>();  // наименование линий
+    private ArrayList<String> idleGroups = new ArrayList<>(); // список групп простоя
 
     public static SettingController getInstance() {
         if (ourInstance == null) {
@@ -34,20 +33,20 @@ public class SettingController {
     private SettingController() {}
 
     @XmlElement
-    public List<Line> getLineNames() {
+    public ArrayList<String> getLineNames() {
         return lineNames;
     }
 
-    public void setLineNames(List<Line> lineNames) {
+    public void setLineNames(ArrayList<String> lineNames) {
         this.lineNames = lineNames;
     }
 
     @XmlElement
-    public ArrayList<String> getPath() {
+    public ArrayList<Path> getPath() {
         return path;
     }
 
-    public void setPath(ArrayList<String> path) {
+    public void setPath(ArrayList<Path> path) {
         this.path = path;
     }
 
@@ -61,13 +60,13 @@ public class SettingController {
     }
 
     /**
-     * Получить название производства по имени линии.
-     * @param lineName название линии.
+     * Получить название производства по пути к бланку.
+     * @param pathname название линии.
      * @return Название производства. Null если соответствия нет.
      */
-    public String getNameProdByNameLine(String lineName) {
-        for (Line line : lineNames) {
-            if (line.getNameLine().equals(lineName)) {
+    public String getNameProductionByPathname(String pathname) {
+        for (Path line : path) {
+            if (pathname.contains(line.getPath())) {
                 return line.getNameProduction();
             }
         }
@@ -80,11 +79,6 @@ public class SettingController {
      * @return true - линия найдена, false - линия не найдена.
      */
     public boolean containsNameLine(String lineName) {
-        for (Line line : lineNames) {
-            if (line.getNameLine().equals(lineName)) {
-                return true;
-            }
-        }
-        return false;
+        return lineNames.contains(lineName);
     }
 }

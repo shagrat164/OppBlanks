@@ -9,7 +9,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.apache.log4j.Logger;
 import ru.solpro.asutp.oppblanksparser.model.BlankData;
+import ru.solpro.asutp.oppblanksparser.model.Path;
 import ru.solpro.asutp.oppblanksparser.util.ExcelUtil;
 import ru.solpro.asutp.oppblanksparser.util.Util;
 
@@ -18,6 +20,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author Protsvetov Danila
@@ -25,6 +28,7 @@ import java.util.ArrayList;
  */
 public class Controller {
 
+    private static final Logger LOG = Logger.getLogger(Controller.class);
     private static ArrayList<BlankData> blankDataList = new ArrayList<>(); // считанные данные
 
     @FXML
@@ -54,6 +58,8 @@ public class Controller {
     @FXML
     private void startAction(ActionEvent actionEvent) {
         Thread thread = new Thread(() -> {
+            Platform.runLater(() -> buttonStartAnalise.setDisable(true));
+
             File[] folders = getListFoldersFromSettings();
             ArrayList<String> listPatchToFile = new ArrayList<>(folders.length * 30);
             if (folders.length > 0) {
@@ -70,20 +76,22 @@ public class Controller {
             if (!listPatchToFile.isEmpty()) {
                 int countFile = 0;
                 for (String pathToFile : listPatchToFile) {
-                    try {
-                        ArrayList<BlankData> blankDataFromFile = ExcelUtil.getBlankDataFromFile(pathToFile);
-                        blankDataList.addAll(blankDataFromFile);
+                    ArrayList<BlankData> blankDataFromFile = ExcelUtil.getBlankDataFromFile(pathToFile);
+                    blankDataList.addAll(blankDataFromFile);
 
-                        countFile++;
-                        String strProgress = "Обработано " + countFile + "/" + listPatchToFile.size();
+                    countFile++;
+                    String strProgress = "Обработано " + countFile + "/" + listPatchToFile.size();
 
-                        Platform.runLater(() -> labelDataProcessing.setText(strProgress));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Platform.runLater(() -> labelDataProcessing.setText(strProgress));
                 }
 
-                Platform.runLater(() -> labelDataProcessing.setText("Записей найдёно: " + blankDataList.size()));
+                if (ExcelUtil.getCounterReadErrors() > 0) {
+                    Platform.runLater(() -> labelDataProcessing.setText("Возникли ошибки во время чтения/записи. " +
+                            "Посмотрите лог файл.\nЗаписей найдёно: " + blankDataList.size()));
+                    ExcelUtil.setCounterReadErrors(0);
+                } else {
+                    Platform.runLater(() -> labelDataProcessing.setText("Записей найдёно: " + blankDataList.size()));
+                }
 
                 if (blankDataList.size() > 0) {
                     ExcelUtil.setBlankDataToFile("output.xls", blankDataList);
@@ -94,10 +102,11 @@ public class Controller {
                         // открываю только что созданный файл
                         desktop.open(new File("output.xls"));
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        LOG.error(e.getMessage());
                     }
                 }
             }
+            Platform.runLater(() -> buttonStartAnalise.setDisable(false));
         });
         thread.setDaemon(true);
         thread.start();
@@ -105,17 +114,18 @@ public class Controller {
 
     /**
      * Получить список папок из настроек.
+     *
      * @return Список папок.
      */
     private File[] getListFoldersFromSettings() {
         File[] result = new File[SettingController.getInstance().getPath().size()];
         int i = 0;
 
-        for (String strFile : SettingController.getInstance().getPath()) {
+        for (Path path : SettingController.getInstance().getPath()) {
+            String strFile = path.getPath();
             File file = new File(strFile);
             result[i++] = file;
         }
-
         return result;
     }
 
